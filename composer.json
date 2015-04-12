@@ -1,0 +1,24 @@
+{
+    "name": "4d47/archieml",
+    "description": "PHP parser for the Archie Markup Language",
+    "keywords": ["archie", "markup", "language", "archieml", "aml", "text", "parser"],
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Mathieu Gagnon",
+            "email": "mathieu@gagnon.name"
+        }
+    ],
+    "require": {
+        "php": ">=5.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.5"
+    },
+    "autoload": {
+        "psr-0": { "ArchieML": "" }
+    },
+    "scripts": {
+        "test": "phpunit ArchieMLTest"
+    }
+}
