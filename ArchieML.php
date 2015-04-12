@@ -33,8 +33,7 @@ class ArchieML
 
     public static function load($stream)
     {
-        $self = new self();
-        return $self->parse($stream);
+        return (new self())->parse($stream);
     }
 
     public function parse($stream)
