@@ -33,7 +33,7 @@ class ArchieML
 
     public static function load($stream)
     {
-        if (is_string($stream)) {
+        if (!is_resource($stream)) {
             $stream = static::stringResource($stream);
         }
         return (new self())->parse($stream);
