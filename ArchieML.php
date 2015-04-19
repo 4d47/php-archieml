@@ -33,13 +33,17 @@ class ArchieML
 
     public static function load($stream)
     {
+        if (is_string($stream)) {
+            $stream = static::stringResource($stream);
+        }
         return (new self())->parse($stream);
     }
 
     public function parse($stream)
     {
-        foreach (preg_split('/(\n)/', $stream) as $line) {
-            $line = "$line\n";
+        assert('is_resource($stream)');
+
+        while ($line = fgets($stream)) {
 
             if ($this->doneParsing) {
                 return $this->data;
@@ -266,4 +270,13 @@ class ArchieML
         }
         return $result;
     }
+
+    public static function stringResource($string)
+    {
+        $handle = fopen('php://memory', 'w+');
+        fwrite($handle, $string);
+        rewind($handle);
+        return $handle;
+    }
+
 }
