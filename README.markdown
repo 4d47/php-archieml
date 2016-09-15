@@ -17,6 +17,7 @@ ArchieML::load(fopen('my-file.aml', 'r'));
 ```
 
 ## Test
-
-`composer test`
-
+```sh
+composer install
+composer test
+```
