@@ -47,29 +47,24 @@ final class ArchieML
 
             if (preg_match(self::commandKey, $input, $matches)) {
 
-                // echo 'parseCommandKey: ';var_export($matches);exit;
                 $this->parseCommandKey($input, mb_strtolower($matches[1]));
 
             } else if (!$this->isSkipping && preg_match(self::startKey, $input, $matches) &&
                        (!$this->stackScope || $this->stackScope['arrayType'] !== 'simple')) {
 
-                // echo 'parseStartKey: ';var_export($matches);exit;
                 $this->parseStartKey($matches[1], $matches[2]);
 
             } else if (!$this->isSkipping && preg_match(self::arrayElement, $input, $matches) && $this->stackScope && $this->stackScope['array'] &&
                        ($this->stackScope['arrayType'] !== 'complex' && $this->stackScope['arrayType'] !== 'freeform') &&
                        strpos($this->stackScope['flags'], '+') === false) {
 
-                // echo 'parseArrayElement: ';var_export($matches);exit;
                 $this->parseArrayElement($matches[1]);
 
             } else if (!$this->isSkipping && preg_match(self::scopePattern, $input, $matches)) {
 
-                // echo 'parseScope: ';var_export($matches);
                 $this->parseScope($matches[1], $matches[2], $matches[3]);
 
             } else if (preg_match(self::nextLine, $input, $matches)) {
-                // echo 'parseText: ';var_export($matches);exit;
                 $this->parseText($input, $matches[0]);
 
             } else {
@@ -177,7 +172,7 @@ final class ArchieML
             // Move up a level
             $lastStackItem = $this->pop($this->stack);
             $this->scope = ($lastStackItem ? $lastStackItem['scope'] : $this->data) ?: $this->data;
-            $this->stackScope = $this->stack[$this->stack->count() - 1];
+            $this->stackScope = $this->stack->count() ? $this->stack[$this->stack->count() - 1] : null;
 
         } else if ($scopeType === '[' || $scopeType === '{') {
             $nesting = false;
@@ -206,13 +201,13 @@ final class ArchieML
             } else {
                 $keyBits = explode('.', $scopeKey);
                 for ($i = 0; $i < count($keyBits) - 1; $i++) {
-                    $keyScope = $keyScope[$keyBits[$i]] = $keyScope[$keyBits[$i]] ?: $this->makeArray();
+                    $keyScope = $keyScope[$keyBits[$i]] = isset($keyScope[$keyBits[$i]]) ? $keyScope[$keyBits[$i]] : $this->makeArray();
                 }
                 $parsedScopeKey = $keyBits[count($keyBits) - 1];
             }
 
             // Content of nested scopes within a freeform should be stored under "value."
-            if ($this->stackScope && strpos($this->stackScope['flags'], '+') !== false && substr($flags, '.') !== false) {
+            if ($this->stackScope && strpos($this->stackScope['flags'], '+') !== false && strpos($flags, '.') !== false) {
                 if ($scopeType === '[') {
                     $parsedScopeKey = 'value';
                 } else if ($scopeType === '{') {
@@ -246,7 +241,7 @@ final class ArchieML
                     $this->stack[] = $stackScopeItem;
                 } else {
                     // TODO: not sure about this typeof
-                    $this->scope = $keyScope[$parsedScopeKey] = ($keyScope[$parsedScopeKey] instanceof $this->options['arrayClass']) ? $keyScope[$parsedScopeKey] : $this->makeArray();
+                    $this->scope = $keyScope[$parsedScopeKey] = (isset($keyScope[$parsedScopeKey]) && $keyScope[$parsedScopeKey] instanceof $this->options['arrayClass']) ? $keyScope[$parsedScopeKey] : $this->makeArray();
                     $this->stack = $this->makeArray();
                     $this->stack[] = $stackScopeItem;
                 }
@@ -334,10 +329,10 @@ final class ArchieML
             $this->bufferScope = $this->scope;
 
             for ($i = 0; $i < count($keyBits) - 1; $i++) {
-                if (is_string($this->bufferScope[$keyBits[$i]])) {
+                if (isset($this->bufferScope[$keyBits[$i]]) && is_string($this->bufferScope[$keyBits[$i]])) {
                     $this->bufferScope[$keyBits[$i]] = $this->makeArray();
                 }
-                $this->bufferScope = $this->bufferScope[$keyBits[$i]] = $this->bufferScope[$keyBits[$i]] ?: $this->makeArray();
+                $this->bufferScope = $this->bufferScope[$keyBits[$i]] = isset($this->bufferScope[$keyBits[$i]]) ? $this->bufferScope[$keyBits[$i]] : $this->makeArray();
             }
 
             if ($options['replace']) {
@@ -366,9 +361,10 @@ final class ArchieML
     }
 
     private function pop($arrayObject) {
-        $last = $arrayObject[$arrayObject->count() - 1];
-        unset($arrayObject[$arrayObject->count() - 1]);
-        return $last;
+        $array = $arrayObject->getArrayCopy();
+        $lastValue = array_pop($array);
+        $arrayObject->exchangeArray($array);
+        return $lastValue;
     }
 
     private static function stringResource($string)

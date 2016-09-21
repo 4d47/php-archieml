@@ -1,5 +1,5 @@
 <?php
-
+error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 class ArchieMLTest extends \PHPUnit_Framework_TestCase
 {
     const TEST_FILES = 'test/archieml.org/test/1.0/*.aml';
