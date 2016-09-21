@@ -21,7 +21,8 @@ final class ArchieML
     private $isSkipping;
 
     public $options = [
-        'arrayClass' => 'ArrayObject'
+        'arrayClass' => 'ArrayObject',
+        'comments' => false
     ];
 
     public function __construct(array $options = [])
