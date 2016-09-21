@@ -13,7 +13,6 @@ Read about the ArchieML specification at [archieml.org](http://archieml.org).
 
 ```php
 ArchieML::load("key: value"); // [ 'key' => 'value' ]
-ArchieML::load(fopen('my-file.aml', 'r'));
 ```
 
 ## Test

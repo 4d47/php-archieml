@@ -29,12 +29,12 @@ final class ArchieML
         $this->options = array_merge($this->options, $options);
     }
 
-    public static function load(string $input, $options = [])
+    public static function load($input, $options = [])
     {
         return (new self($options))->parse($input);
     }
 
-    public function parse(string $input)
+    public function parse($input)
     {
         assert('is_string($input)');
 
