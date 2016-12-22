@@ -374,24 +374,4 @@ final class ArchieML
         rewind($handle);
         return $handle;
     }
-
-    private function debug()
-    {
-        echo "data: ";
-        var_export($this->data);
-        echo "\n\nscope: ";
-        var_export($this->scope);
-        echo "\n\nstack: ";
-        var_export($this->stack);
-        echo "\n\nstackScope: ";
-        var_export($this->stackScope);
-        echo "\n\nbufferScope: ";
-        var_export($this->bufferScope);
-        echo "\n\nbufferKey: ";
-        var_export($this->bufferKey);
-        echo "\n\nbufferString: ";
-        var_export($this->bufferString);
-        echo "\n\nisSkipping: ";
-        var_export($this->isSkipping);
-    }
 }
