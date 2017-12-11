@@ -19,6 +19,6 @@
         "psr-0": { "ArchieML": "" }
     },
     "scripts": {
-        "test": "phpunit ArchieMLTest"
+        "test": "phpunit ArchieMLTest.php"
     }
 }
